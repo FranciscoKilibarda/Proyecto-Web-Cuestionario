@@ -1,20 +1,18 @@
-// src/config/mongo.js
+// src/models/dificultad.model.js
 const mongoose = require('mongoose');
-require('dotenv').config();
 
-const connectMongo = async () => {
-  try {
-    const uri = process.env.MONGO_URI;
-    console.log('>>> connectMongo llamado');
-    console.log('MONGO_URI que estoy usando:', uri);
-
-    console.log(' Conectando a MongoDB...');
-    await mongoose.connect(uri);
-    console.log(' MongoDB conectado correctamente ✅');
-  } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error.message);
-    throw error;
+const DificultadSchema = new mongoose.Schema(
+  {
+    nombre: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    }
+  },
+  {
+    collection: 'dificultades' 
   }
-};
+);
 
-module.exports = connectMongo;
+module.exports = mongoose.model('Dificultad', DificultadSchema);
