@@ -12,7 +12,7 @@ const connectMongo = async () => {
     await mongoose.connect(uri);
     console.log(' MongoDB conectado correctamente ✅');
   } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error.message);
+    console.error(' Error conectando a MongoDB:', error.message);
     throw error; // dejamos que index.js lo capture
   }
 };

@@ -1,18 +1,12 @@
+
 const Categoria = require("../models/categoria.model");
 const Subcategoria = require("../models/subcategoria.model");
 const RangoEdad = require("../models/rangoEdad.model");
 const Dificultad = require("../models/dificultad.model");
-<<<<<<< HEAD
-const Pregunta = require("../models/pregunta.model");  
-
-async function seedDatabase() {
-  console.log("Ejecutando seed inicial...");
-=======
 const Pregunta = require("../models/pregunta.model");
 
 async function seedDatabase() {
   console.log(" Ejecutando seed inicial...");
->>>>>>> Eduardo
 
   const categoriasData = [
     { nombre: "Matemática", descripcion: "Operaciones y números" },
@@ -25,12 +19,9 @@ async function seedDatabase() {
     categorias = await Categoria.insertMany(categoriasData);
     console.log("Categorías creadas");
   } else {
-<<<<<<< HEAD
     console.log("Categorías ya existen");
-=======
-    console.log("Categorías ya existen, usando existentes");
->>>>>>> Eduardo
   }
+
 
   const subcategoriasData = [
     { nombre: "Aritmética", categoria: categorias[0]._id },
@@ -51,11 +42,7 @@ async function seedDatabase() {
     subcategorias = await Subcategoria.insertMany(subcategoriasData);
     console.log("Subcategorías creadas");
   } else {
-<<<<<<< HEAD
     console.log("Subcategorías ya existen");
-=======
-    console.log("Subcategorías ya existen, usando existentes");
->>>>>>> Eduardo
   }
 
   const rangosData = [
@@ -71,13 +58,10 @@ async function seedDatabase() {
     rangos = await RangoEdad.insertMany(rangosData);
     console.log("Rangos de edad creados");
   } else {
-<<<<<<< HEAD
     console.log("Rangos ya existen");
-=======
-    console.log("Rangos ya existen, usando existentes");
->>>>>>> Eduardo
   }
 
+ 
   const dificultadesData = [
     { nombre: "Fácil" },
     { nombre: "Medio" },
@@ -87,16 +71,11 @@ async function seedDatabase() {
   let dificultades = await Dificultad.find();
   if (dificultades.length === 0) {
     dificultades = await Dificultad.insertMany(dificultadesData);
-<<<<<<< HEAD
     console.log("Dificultades creadas");
   } else {
     console.log("Dificultades ya existen");
-=======
-    console.log(" Dificultades creadas");
-  } else {
-    console.log(" Dificultades ya existen, usando existentes");
->>>>>>> Eduardo
   }
+
 
   const preguntasData = [
     {
@@ -108,11 +87,7 @@ async function seedDatabase() {
       estado: "publicada"
     },
     {
-<<<<<<< HEAD
       texto: "Identifica el sujeto de la oración: 'El perro ladró fuerte'.",
-=======
-      texto: "Identifica el sujeto de la oración: 'El gato negro corría rápido'.",
->>>>>>> Eduardo
       dificultad: dificultades[1]._id,
       rangoEdad: rangos[2]._id,
       categoria: categorias[1]._id,
@@ -120,11 +95,7 @@ async function seedDatabase() {
       estado: "publicada"
     },
     {
-<<<<<<< HEAD
       texto: "¿Cuál es la función principal de la célula?",
-=======
-      texto: "¿Cuál es la función básica de la mitocondria?",
->>>>>>> Eduardo
       dificultad: dificultades[2]._id,
       rangoEdad: rangos[4]._id,
       categoria: categorias[2]._id,
@@ -133,26 +104,15 @@ async function seedDatabase() {
     }
   ];
 
-<<<<<<< HEAD
   let preguntas = await Pregunta.find();
-=======
-  const preguntas = await Pregunta.find();
->>>>>>> Eduardo
   if (preguntas.length === 0) {
     await Pregunta.insertMany(preguntasData);
     console.log("Preguntas creadas");
   } else {
-<<<<<<< HEAD
     console.log("Preguntas ya existen");
   }
 
   console.log(" SEED COMPLETO");
-=======
-    console.log("Preguntas ya existen, usando existentes");
-  }
-
-  console.log(" SEED COMPLETO — TODO CARGADO CORRECTAMENTE");
->>>>>>> Eduardo
 }
 
 module.exports = seedDatabase;
