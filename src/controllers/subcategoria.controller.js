@@ -1,13 +1,14 @@
 const Subcategoria = require('../models/subcategoria.model');
+const { validationResult } = require('express-validator'); // Usamos express-validator
 
-const obtenerSubcategorias = async (req,res) => {
-    try{
-        const subcategorias = await Subcategoria.find().populate('categoria');
-        return res.json(subcategorias);
-    }catch (error){
-        console.error('Error obteniendo subcategorias:', error.message);
-        return res.status(500).json({ message: 'Error obteniendo subcategorias' });
-    }
+const obtenerSubcategorias = async (req, res) => {
+  try {
+    const subcategorias = await Subcategoria.find().populate('categoria');
+    return res.json(subcategorias);
+  } catch (error) {
+    console.error('Error obteniendo subcategorias:', error.message);
+    return res.status(500).json({ message: 'Error obteniendo subcategorias' });
+  }
 };
 
 const obtenerSubcategoriaPorId = async (req, res) => {
@@ -28,22 +29,35 @@ const obtenerSubcategoriaPorId = async (req, res) => {
 
 const crearSubcategoria = async (req, res) => {
   try {
+    const errors = validationResult(req); 
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() }); 
+    }
+
     const { nombre, descripcion, categoria } = req.body;
 
     if (!nombre || nombre.trim() === '') {
       return res.status(400).json({ message: 'El nombre es obligatorio' });
     }
 
+    if (nombre.length < 3 || nombre.length > 50) {
+      return res.status(400).json({ message: 'El nombre debe tener entre 3 y 50 caracteres' });
+    }
+
     if (!categoria) {
       return res.status(400).json({ message: 'La categoría es obligatoria' });
     }
 
-    const subcategoria = await Subcategoria.create({
+    // Crear la subcategoría
+    const subcategoria = new Subcategoria({
       nombre,
       descripcion,
-      categoria,
+      categoria
     });
-       return res.status(201).json(subcategoria);
+
+    await subcategoria.save(); // Guardamos la subcategoría en la base de datos
+
+    return res.status(201).json(subcategoria); // Respondemos con la subcategoría creada
   } catch (error) {
     console.error('Error creando subcategoria:', error.message);
     return res.status(500).json({ message: 'Error creando subcategoria' });
@@ -75,6 +89,7 @@ const actualizarSubcategoria = async (req, res) => {
     return res.status(500).json({ message: 'Error actualizando subcategoria' });
   }
 };
+
 
 const eliminarSubcategoria = async (req, res) => {
   try {
