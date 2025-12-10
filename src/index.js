@@ -49,6 +49,7 @@ async function startServer() {
     app.use('/api/categorias', categoriasRoutes);
     app.use('/api/subcategorias', subcategoriasRoutes);
     app.use('/api/preguntas', preguntasRoutes);
+    app.use('/api/auth', require('./routes/auth.routes'));
 
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en http://localhost:${PORT}`);
