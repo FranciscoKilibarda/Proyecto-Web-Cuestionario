@@ -1,5 +1,5 @@
-
 const Pregunta = require('../models/pregunta.model');
+const { validationResult } = require('express-validator'); 
 
 const obtenerPreguntas = async (req, res) => {
   try {
@@ -37,39 +37,26 @@ const obtenerPreguntaPorId = async (req, res) => {
 
 const crearPregunta = async (req, res) => {
   try {
-    const {
-      enunciado,
-      categoria,
-      subcategoria,
-      dificultad,
-      rango_edad,
-      opciones,
-      respuesta_correcta,
-    } = req.body;
+    const errors = validationResult(req); 
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() }); 
+    }
+
+    const { enunciado, categoria, subcategoria, dificultad, rango_edad, opciones, respuesta_correcta } = req.body;
 
     if (!enunciado || enunciado.trim() === '') {
       return res.status(400).json({ message: 'El enunciado es obligatorio' });
     }
 
-    if (!categoria) {
-      return res.status(400).json({ message: 'La categoría es obligatoria' });
-    }
-
-    if (!dificultad) {
-      return res.status(400).json({ message: 'La dificultad es obligatoria' });
-    }
-
     if (!opciones || !Array.isArray(opciones) || opciones.length < 2) {
-      return res
-        .status(400)
-        .json({ message: 'Debe proporcionar al menos 2 opciones de respuesta' });
+      return res.status(400).json({ message: 'Debe proporcionar al menos 2 opciones de respuesta' });
     }
 
-    if (respuesta_correcta == null) {
-      return res.status(400).json({ message: 'La respuesta correcta es obligatoria' });
+    if (respuesta_correcta == null || !opciones.includes(respuesta_correcta)) {
+      return res.status(400).json({ message: 'La respuesta correcta debe ser una opción válida' });
     }
 
-    const pregunta = await Pregunta.create({
+    const pregunta = new Pregunta({
       enunciado,
       categoria,
       subcategoria,
@@ -78,6 +65,8 @@ const crearPregunta = async (req, res) => {
       opciones,
       respuesta_correcta,
     });
+
+    await pregunta.save(); 
 
     return res.status(201).json(pregunta);
   } catch (error) {
@@ -89,31 +78,26 @@ const crearPregunta = async (req, res) => {
 const actualizarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      enunciado,
-      categoria,
-      subcategoria,
-      dificultad,
-      rango_edad,
-      opciones,
-      respuesta_correcta,
-    } = req.body;
+    const { enunciado, categoria, subcategoria, dificultad, rango_edad, opciones, respuesta_correcta } = req.body;
 
+    // Validación de enunciado
     if (!enunciado || enunciado.trim() === '') {
       return res.status(400).json({ message: 'El enunciado es obligatorio' });
     }
 
+    // Validación de opciones
+    if (!opciones || !Array.isArray(opciones) || opciones.length < 2) {
+      return res.status(400).json({ message: 'Debe proporcionar al menos 2 opciones de respuesta' });
+    }
+
+    // Validación de respuesta correcta
+    if (respuesta_correcta == null || !opciones.includes(respuesta_correcta)) {
+      return res.status(400).json({ message: 'La respuesta correcta debe ser una opción válida' });
+    }
+
     const pregunta = await Pregunta.findByIdAndUpdate(
       id,
-      {
-        enunciado,
-        categoria,
-        subcategoria,
-        dificultad,
-        rango_edad,
-        opciones,
-        respuesta_correcta,
-      },
+      { enunciado, categoria, subcategoria, dificultad, rango_edad, opciones, respuesta_correcta },
       { new: true }
     );
 
@@ -128,6 +112,7 @@ const actualizarPregunta = async (req, res) => {
   }
 };
 
+// Eliminar pregunta
 const eliminarPregunta = async (req, res) => {
   try {
     const { id } = req.params;
