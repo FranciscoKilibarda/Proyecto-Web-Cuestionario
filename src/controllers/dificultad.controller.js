@@ -1,4 +1,5 @@
 const Dificultad = require('../models/dificultad.model');
+const { validationResult } = require('express-validator'); 
 
 const obtenerDificultades = async (req, res) => {
   try {
@@ -26,16 +27,29 @@ const obtenerDificultadPorId = async (req, res) => {
   }
 };
 
+
 const crearDificultad = async (req, res) => {
   try {
-    const { nombre, descripcion } = req.body;
+    
+    const errors = validationResult(req); 
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() }); 
+    }
+
+    const { nombre } = req.body;
 
     if (!nombre || nombre.trim() === '') {
       return res.status(400).json({ message: 'El nombre es obligatorio' });
     }
 
-    const dificultad = await Dificultad.create({ nombre, descripcion });
-    return res.status(201).json(dificultad);
+
+    const dificultad = new Dificultad({
+      nombre,
+    });
+
+    await dificultad.save(); 
+
+    return res.status(201).json(dificultad); 
   } catch (error) {
     console.error('Error creando dificultad:', error.message);
     return res.status(500).json({ message: 'Error creando dificultad' });
@@ -45,17 +59,13 @@ const crearDificultad = async (req, res) => {
 const actualizarDificultad = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion } = req.body;
+    const { nombre } = req.body;
 
     if (!nombre || nombre.trim() === '') {
       return res.status(400).json({ message: 'El nombre es obligatorio' });
     }
 
-    const dificultad = await Dificultad.findByIdAndUpdate(
-      id,
-      { nombre, descripcion },
-      { new: true }
-    );
+    const dificultad = await Dificultad.findByIdAndUpdate(id, { nombre }, { new: true });
 
     if (!dificultad) {
       return res.status(404).json({ message: 'Dificultad no encontrada' });
@@ -91,4 +101,3 @@ module.exports = {
   actualizarDificultad,
   eliminarDificultad,
 };
-
