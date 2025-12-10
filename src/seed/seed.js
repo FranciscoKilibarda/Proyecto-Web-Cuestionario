@@ -1,3 +1,4 @@
+
 const Categoria = require("../models/categoria.model");
 const Subcategoria = require("../models/subcategoria.model");
 const RangoEdad = require("../models/rangoEdad.model");
@@ -18,8 +19,9 @@ async function seedDatabase() {
     categorias = await Categoria.insertMany(categoriasData);
     console.log("Categorías creadas");
   } else {
-    console.log("Categorías ya existen, usando existentes");
+    console.log("Categorías ya existen");
   }
+
 
   const subcategoriasData = [
     { nombre: "Aritmética", categoria: categorias[0]._id },
@@ -40,7 +42,7 @@ async function seedDatabase() {
     subcategorias = await Subcategoria.insertMany(subcategoriasData);
     console.log("Subcategorías creadas");
   } else {
-    console.log("Subcategorías ya existen, usando existentes");
+    console.log("Subcategorías ya existen");
   }
 
   const rangosData = [
@@ -56,9 +58,10 @@ async function seedDatabase() {
     rangos = await RangoEdad.insertMany(rangosData);
     console.log("Rangos de edad creados");
   } else {
-    console.log("Rangos ya existen, usando existentes");
+    console.log("Rangos ya existen");
   }
 
+ 
   const dificultadesData = [
     { nombre: "Fácil" },
     { nombre: "Medio" },
@@ -68,10 +71,11 @@ async function seedDatabase() {
   let dificultades = await Dificultad.find();
   if (dificultades.length === 0) {
     dificultades = await Dificultad.insertMany(dificultadesData);
-    console.log(" Dificultades creadas");
+    console.log("Dificultades creadas");
   } else {
-    console.log(" Dificultades ya existen, usando existentes");
+    console.log("Dificultades ya existen");
   }
+
 
   const preguntasData = [
     {
@@ -83,7 +87,7 @@ async function seedDatabase() {
       estado: "publicada"
     },
     {
-      texto: "Identifica el sujeto de la oración: 'El gato negro corría rápido'.",
+      texto: "Identifica el sujeto de la oración: 'El perro ladró fuerte'.",
       dificultad: dificultades[1]._id,
       rangoEdad: rangos[2]._id,
       categoria: categorias[1]._id,
@@ -91,7 +95,7 @@ async function seedDatabase() {
       estado: "publicada"
     },
     {
-      texto: "¿Cuál es la función básica de la mitocondria?",
+      texto: "¿Cuál es la función principal de la célula?",
       dificultad: dificultades[2]._id,
       rangoEdad: rangos[4]._id,
       categoria: categorias[2]._id,
@@ -100,15 +104,15 @@ async function seedDatabase() {
     }
   ];
 
-  const preguntas = await Pregunta.find();
+  let preguntas = await Pregunta.find();
   if (preguntas.length === 0) {
     await Pregunta.insertMany(preguntasData);
     console.log("Preguntas creadas");
   } else {
-    console.log("Preguntas ya existen, usando existentes");
+    console.log("Preguntas ya existen");
   }
 
-  console.log(" SEED COMPLETO — TODO CARGADO CORRECTAMENTE");
+  console.log(" SEED COMPLETO");
 }
 
 module.exports = seedDatabase;

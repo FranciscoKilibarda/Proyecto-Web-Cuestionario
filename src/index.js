@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+
 const dificultadesRoutes = require('./routes/dificultades.routes');
 const rangosEdadRoutes = require('./routes/rangosEdad.routes');
 const categoriasRoutes = require('./routes/categorias.routes');
@@ -17,7 +18,7 @@ const PORT = Number(process.env.PORT) || 3000;
 
 console.log('>>> index.js se está ejecutando');
 
-
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -37,25 +38,25 @@ async function startServer() {
 
     console.log('Conectando a MongoDB...');
     await mongoose.connect(mongoURI);
-    console.log(' Conectado a MongoDB');
+    console.log('Conectado a MongoDB');
 
     console.log(' Ejecutando seed...');
     await seedDatabase();
-    console.log(' Seed completado');
+    console.log(' SEED COMPLETO');
 
-  
     app.use('/api/dificultades', dificultadesRoutes);
     app.use('/api/rangos-edad', rangosEdadRoutes);
     app.use('/api/categorias', categoriasRoutes);
     app.use('/api/subcategorias', subcategoriasRoutes);
     app.use('/api/preguntas', preguntasRoutes);
+    app.use('/api/auth', require('./routes/auth.routes'));
 
     app.listen(PORT, () => {
-      console.log(` Servidor corriendo en http://localhost:${PORT}`);
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
       console.log(` Ejemplo: http://localhost:${PORT}/api/categorias`);
     });
   } catch (error) {
-    console.error(' Error conectando o ejecutando seed:', error.message);
+    console.error('Error conectando o ejecutando seed:', error.message);
     process.exit(1);
   }
 }
