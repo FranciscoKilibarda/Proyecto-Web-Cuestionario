@@ -1,4 +1,5 @@
 const RangoEdad = require('../models/rangoEdad.model');
+const { validationResult } = require('express-validator'); 
 
 const obtenerRangosEdad = async (req, res) => {
   try {
@@ -9,6 +10,7 @@ const obtenerRangosEdad = async (req, res) => {
     return res.status(500).json({ message: 'Error obteniendo rangos de edad' });
   }
 };
+
 const obtenerRangoEdadPorId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -27,6 +29,11 @@ const obtenerRangoEdadPorId = async (req, res) => {
 
 const crearRangoEdad = async (req, res) => {
   try {
+    const errors = validationResult(req); 
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() }); 
+    }
+
     const { etiqueta, edad_min, edad_max } = req.body;
 
     if (!etiqueta || etiqueta.trim() === '') {
@@ -45,13 +52,21 @@ const crearRangoEdad = async (req, res) => {
       return res.status(400).json({ message: 'La edad mínima debe ser menor a la máxima' });
     }
 
-    const rango = await RangoEdad.create({ etiqueta, edad_min, edad_max });
-    return res.status(201).json(rango);
+    const rango = new RangoEdad({
+      etiqueta,
+      edad_min,
+      edad_max
+    });
+
+    await rango.save(); 
+
+    return res.status(201).json(rango); 
   } catch (error) {
     console.error('Error creando rango de edad:', error.message);
     return res.status(500).json({ message: 'Error creando rango de edad' });
   }
 };
+
 const actualizarRangoEdad = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,6 +92,7 @@ const actualizarRangoEdad = async (req, res) => {
     return res.status(500).json({ message: 'Error actualizando rango de edad' });
   }
 };
+
 const eliminarRangoEdad = async (req, res) => {
   try {
     const { id } = req.params;
