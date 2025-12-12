@@ -1,0 +1,38 @@
+Para poder deployar en http usaremos render.
+1. Nos crearemos una cuenta enlazando con nuestro git en el siguiente enlace: https://dashboard.render.com/register
+2. Nos redirigira a la ventana de rendir para escoger servicios, escogeremos el "Web Services"
+3. Como ya esta enlazada ya con nuestra cuenta git nos mostrara todos los repositorios que tenemos, en este caso damos click en
+"Francisco / Proyecto-Web-Cuestionario
+4. Ahora nos aparece las configuraciones que debemos hacerle:
+Name: Ponle un nombre único (ej: proyecto-cuestionarios-juan). Esta será parte de tu URL.
+Region: Deja la que salga por defecto.
+Branch: Asegúrate que diga main.
+Root Directory: Déjalo en blanco (a menos que tu package.json esté dentro de una subcarpeta, pero creo que lo tienes en la raíz).
+Build Command: npm install (Esto instala tus librerías en la nube).
+Start Command: Aquí es importante. Escribe el comando para iniciar tu app.
+Si tienes un script "start" en tu package.json: npm start
+Si no, pon directo: node src/index.js (mejor dejemos ambas)
+Y por ultimo escogemos el modelo gratuito
+
+5. Environment Variables
+Aqui podemos las keys de nuestro archivo .env porque en git no se  suve ese archivo y nosotros debemos hacerlo desde esta forma
+NAME_OF_VARIABLE = MONGO_URI Value = mongodb+srv://panchitokili555_db_user:web-ones57@cluster0.y2zt08m.mongodb.net/cuestionario_db?retryWrites=true&w=majority&appName=Cluster0
+NAME_OF_VARIABLE = JWT_SECRET Value = PalabraSuperSecretaParaFirmarTokens123!
+con eso ya podemos darle en "Deploy web service"
+
+6. Aparecera una terminal negra ejecutando todo y luego de eso podremos entrar al link de la parte media de la pagina y listo, ya deployamos
+
+Ahora para pasar a http2 gracias a render ya esta hecho!
+Así es como funciona:
+El Cliente (Navegador) habla HTTP/2 con los servidores de Render.
+Render traduce esa información súper rápida.
+Render le pasa los datos a tu Node.js en un formato que él entiende.
+
+Para verificarlo simplemente hace esto
+Abre tu página desplegada.
+Haz clic derecho en cualquier lugar y elige Inspeccionar.
+Ve a la pestaña Network (Red).
+Recarga la página (F5).
+Busca la columna que dice Protocol (Protocolo).
+Nota: Si no ves la columna "Protocol", haz clic derecho en los títulos de la tabla (donde dice Name, Status, Type) y marca la opción "Protocol".
+Verás que dice h2. h2 = HTTP/2.
